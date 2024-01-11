@@ -1,7 +1,10 @@
 package fr.saddem.bank.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+
+import org.springframework.util.CollectionUtils;
 
 public class Account{
     private Long id;
@@ -58,6 +61,11 @@ public class Account{
 
     public void setOperations(Collection<Operation> operations) {
         this.operations = operations;
+    }
+
+    public void addAnOperation(Operation operation){
+        if(CollectionUtils.isEmpty(this.operations)) operations = new ArrayList<>();
+        operations.add(operation);
     }
 
     @Override

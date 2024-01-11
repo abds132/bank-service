@@ -29,4 +29,8 @@ public class AccountRepository {
     public Optional<Account> findById(Long id){
         return allAccounts.stream().filter(a->a.getId() == id).findFirst();
     }
+
+    public static Collection<Account> getAllaccounts() {
+        return allAccounts;
+    }
 }
