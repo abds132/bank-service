@@ -2,11 +2,10 @@ package fr.saddem.bank.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.swing.text.html.Option;
+import org.springframework.stereotype.Service;
 
 import fr.saddem.bank.dao.AccountRepository;
 import fr.saddem.bank.entity.Account;
@@ -16,6 +15,7 @@ import fr.saddem.bank.entity.WithdrawlOperation;
 import fr.saddem.bank.exceptions.AccountNotFoundException;
 import fr.saddem.bank.exceptions.NotEnoughBalanceException;
 
+@Service
 public class AccountServiceImpl implements AccountService{
 
     /**
