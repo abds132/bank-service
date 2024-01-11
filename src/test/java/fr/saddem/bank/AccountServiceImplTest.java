@@ -2,16 +2,21 @@ package fr.saddem.bank;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import fr.saddem.bank.dao.AccountRepository;
 import fr.saddem.bank.entity.Account;
 import fr.saddem.bank.entity.Client;
+import fr.saddem.bank.entity.DepositOperation;
+import fr.saddem.bank.entity.Operation;
+import fr.saddem.bank.entity.WithdrawlOperation;
 import fr.saddem.bank.exceptions.AccountNotFoundException;
 import fr.saddem.bank.exceptions.NotEnoughBalanceException;
 import fr.saddem.bank.service.AccountService;
@@ -19,11 +24,16 @@ import fr.saddem.bank.service.AccountServiceImpl;
 
 public class AccountServiceImplTest {
 
-    AccountRepository accountRepository = new AccountRepository();
-    AccountService accountService = new AccountServiceImpl(accountRepository);
+    private AccountService accountService;
+
+    @BeforeEach
+    private void init(){
+        AccountRepository accountRepository = new AccountRepository();
+        accountService = new AccountServiceImpl(accountRepository);
+    }
 
     @Test
-    public void shouldReturnAnAccount(){
+    public void shouldReturnAnAccount() throws AccountNotFoundException{
         //GIVEN
         Long idAccount = 1l;
         //WHEN
@@ -34,14 +44,11 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void shouldReturnEmptyOptionalIfAnAccountNotFound(){
+    public void shouldReturnEmptyOptionalIfAnAccountNotFound() throws AccountNotFoundException{
         //GIVEN
         Long idAccount = 4l;
-        //WHEN
-        Optional<Account> accountOpt = accountService.findAccountById(idAccount);
-        //THEN
-        assertNotNull(accountOpt);
-        assertEquals(accountOpt, Optional.empty());
+        //WHEN THEN
+        assertThrows(AccountNotFoundException.class, () -> accountService.findAccountById(idAccount));
     }
 
     @Test
@@ -60,7 +67,7 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void shouldThrowAnExceptionWhenAnAccountNotExist() throws AccountNotFoundException{
+    public void shouldThrowAnExceptionWhenAnAccountNotExistInOperationDeposit() throws AccountNotFoundException{
         //GIVEN
         Long idAccount = 4l;
         Double amountToDeposit = 2.0;
@@ -93,6 +100,44 @@ public class AccountServiceImplTest {
         AccountRepository.getAllaccounts().add(account);
         //WHEN THEN
         assertThrows(NotEnoughBalanceException.class, () -> accountService.withdrawl(idAccount, amountToWithdrawl));
+    }
+
+    @Test
+    public void shouldReturnEmptyOperationListWhenNoOperationsInAccount() throws AccountNotFoundException, NotEnoughBalanceException{
+        //GIVEN
+        Long idAccount = 6l;
+        //WHEN
+        Optional<ArrayList<Operation>> allOperations = accountService.getOperationsByAccountId(idAccount);
+        //THEN
+        assertEquals(Optional.empty(), allOperations);
+    }
+
+    @Test
+    public void shouldGetAllOperationsStatementInOrder() throws AccountNotFoundException, NotEnoughBalanceException{
+        //GIVEN
+        Long idAccount = 7l;
+        accountService.deposit(idAccount, 2.0);
+        accountService.withdrawl(idAccount, 1.0);
+        //WHEN
+        ArrayList<Operation> allOperations = accountService.getOperationsByAccountId(idAccount).get();
+        //THEN
+        assertEquals(2, allOperations.size());
+        assertInstanceOf(DepositOperation.class, allOperations.get(0));
+        assertInstanceOf(WithdrawlOperation.class, allOperations.get(1));
+    }
+
+    @Test
+    public void shouldGetTheRightBalanceInAllOperationsStatement() throws AccountNotFoundException, NotEnoughBalanceException{
+        //GIVEN
+        Long idAccount = 8l;
+        accountService.deposit(idAccount, 6.0);
+        accountService.withdrawl(idAccount, 1.0);
+        //WHEN
+        ArrayList<Operation> allOperations = accountService.getOperationsByAccountId(idAccount).get();
+        //THEN
+        assertEquals(2, allOperations.size());
+        assertEquals(6.0, allOperations.get(0).getBalance());
+        assertEquals(5.0, allOperations.get(1).getBalance());
     }
 
 }

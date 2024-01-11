@@ -11,7 +11,7 @@ public class Account{
     private LocalDateTime creationDate;
     private Double balance;
     private Client client;
-    private Collection<Operation> operations;
+    private ArrayList<Operation> operations;
     
     public Account() {
     }
@@ -55,11 +55,11 @@ public class Account{
         this.client = client;
     }
 
-    public Collection<Operation> getOperations() {
+    public ArrayList<Operation> getOperations() {
         return operations;
     }
 
-    public void setOperations(Collection<Operation> operations) {
+    public void setOperations(ArrayList<Operation> operations) {
         this.operations = operations;
     }
 
