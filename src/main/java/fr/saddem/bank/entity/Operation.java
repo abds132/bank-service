@@ -1,15 +1,16 @@
 package fr.saddem.bank.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public abstract class Operation {
     private String id;
     private LocalDateTime operationDate;
-    private Double amount;
-    private Double balance;
+    private BigDecimal amount;
+    private BigDecimal balance;
     private Account account;
     
-    public Operation(String id, LocalDateTime operationDate, Double amount, Double balance, Account account) {
+    public Operation(String id, LocalDateTime operationDate, BigDecimal amount, BigDecimal balance, Account account) {
         this.id = id;
         this.operationDate = operationDate;
         this.amount = amount;
@@ -33,19 +34,19 @@ public abstract class Operation {
         this.operationDate = operationDate;
     }
 
-    public Double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public Double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

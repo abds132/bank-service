@@ -1,5 +1,6 @@
 package fr.saddem.bank.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,11 +23,11 @@ public class AccountRepository {
         Client c2 = new Client("Robert");
         allClients.addAll(Arrays.asList(c1, c2));
 
-        allAccounts.add(new Account(1l, LocalDateTime.now(), 0.0, c1));
-        allAccounts.add(new Account(2l, LocalDateTime.now(), 0.0, c2));
-        allAccounts.add(new Account(6l, LocalDateTime.now(), 0.0, c2));
-        allAccounts.add(new Account(7l, LocalDateTime.now(), 0.0, c2));
-        allAccounts.add(new Account(8l, LocalDateTime.now(), 0.0, c2));
+        allAccounts.add(new Account(1l, LocalDateTime.now(), new BigDecimal(0.0), c1));
+        allAccounts.add(new Account(2l, LocalDateTime.now(), new BigDecimal(0.0), c2));
+        allAccounts.add(new Account(6l, LocalDateTime.now(), new BigDecimal(0.0), c2));
+        allAccounts.add(new Account(7l, LocalDateTime.now(), new BigDecimal(0.0), c2));
+        allAccounts.add(new Account(8l, LocalDateTime.now(), new BigDecimal(0.0), c2));
     }
 
     public Optional<Account> findById(Long id){

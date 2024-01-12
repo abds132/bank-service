@@ -1,22 +1,21 @@
 package fr.saddem.bank.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-
 import org.springframework.util.CollectionUtils;
 
 public class Account{
     private Long id;
     private LocalDateTime creationDate;
-    private Double balance;
+    private BigDecimal balance;
     private Client client;
     private ArrayList<Operation> operations;
     
     public Account() {
     }
 
-    public Account(Long id, LocalDateTime creationDate, Double balance, Client client) {
+    public Account(Long id, LocalDateTime creationDate, BigDecimal balance, Client client) {
         this.id = id;
         this.creationDate = creationDate;
         this.balance = balance;
@@ -39,11 +38,11 @@ public class Account{
         this.creationDate = creationDate;
     }
 
-    public Double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

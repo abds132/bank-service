@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -55,8 +57,8 @@ public class AccountServiceImplTest {
     public void shouldIncreaseBalanceWhenDepositOperation() throws AccountNotFoundException{
         //GIVEN
         Long idAccount = 1l;
-        Double amountToDeposit = 2.0;
-        Double balanceOfAccount = 2.0;
+        BigDecimal amountToDeposit = BigDecimal.valueOf(2.0);
+        BigDecimal balanceOfAccount = BigDecimal.valueOf(2.0);
         //WHEN
         accountService.deposit(idAccount, amountToDeposit);
         //THEN
@@ -70,7 +72,7 @@ public class AccountServiceImplTest {
     public void shouldThrowAnExceptionWhenAnAccountNotExistInOperationDeposit() throws AccountNotFoundException{
         //GIVEN
         Long idAccount = 4l;
-        Double amountToDeposit = 2.0;
+        BigDecimal amountToDeposit = BigDecimal.valueOf(2.0);;
         //WHEN THEN
         assertThrows(AccountNotFoundException.class, () -> accountService.deposit(idAccount, amountToDeposit));
     }
@@ -79,8 +81,8 @@ public class AccountServiceImplTest {
     public void shouldDecreaseBalanceWhenWithdrawlOperation() throws AccountNotFoundException, NotEnoughBalanceException{
         //GIVEN
         Long idAccount = 3l;
-        Double amountToWithdrawl = 2.0;
-        Account account = new Account(3l, LocalDateTime.now(), 5.0, new Client("Julien"));
+        BigDecimal amountToWithdrawl = BigDecimal.valueOf(2.0);;
+        Account account = new Account(3l, LocalDateTime.now(), BigDecimal.valueOf(5.0), new Client("Julien"));
         AccountRepository.getAllaccounts().add(account);
         //WHEN
         accountService.withdrawl(idAccount, amountToWithdrawl);
@@ -88,15 +90,15 @@ public class AccountServiceImplTest {
         Optional<Account> accountOpt = accountService.findAccountById(idAccount);
         assertNotNull(accountOpt);
         assertFalse(accountOpt.get().getOperations().isEmpty());
-        assertEquals(accountOpt.get().getBalance(), 3.0);
+        assertEquals(accountOpt.get().getBalance(), BigDecimal.valueOf(3.0));
     }
 
     @Test
     public void shouldThrowAnExceptionWhenNoBalanceEnoughInTheAccount() {
         //GIVEN
         Long idAccount = 5l;
-        Double amountToWithdrawl = 2.0;
-        Account account = new Account(5l, LocalDateTime.now(), 0.0, new Client("Julien"));
+        BigDecimal amountToWithdrawl = BigDecimal.valueOf(2.0);
+        Account account = new Account(5l, LocalDateTime.now(), BigDecimal.valueOf(0.0), new Client("Julien"));
         AccountRepository.getAllaccounts().add(account);
         //WHEN THEN
         assertThrows(NotEnoughBalanceException.class, () -> accountService.withdrawl(idAccount, amountToWithdrawl));
@@ -116,8 +118,8 @@ public class AccountServiceImplTest {
     public void shouldGetAllOperationsStatementInOrder() throws AccountNotFoundException, NotEnoughBalanceException{
         //GIVEN
         Long idAccount = 7l;
-        accountService.deposit(idAccount, 2.0);
-        accountService.withdrawl(idAccount, 1.0);
+        accountService.deposit(idAccount, BigDecimal.valueOf(2.0));
+        accountService.withdrawl(idAccount, BigDecimal.valueOf(1.0));
         //WHEN
         ArrayList<Operation> allOperations = accountService.getOperationsByAccountId(idAccount).get();
         //THEN
@@ -130,14 +132,13 @@ public class AccountServiceImplTest {
     public void shouldGetTheRightBalanceInAllOperationsStatement() throws AccountNotFoundException, NotEnoughBalanceException{
         //GIVEN
         Long idAccount = 8l;
-        accountService.deposit(idAccount, 6.0);
-        accountService.withdrawl(idAccount, 1.0);
+        accountService.deposit(idAccount, BigDecimal.valueOf(6.0));
+        accountService.withdrawl(idAccount, BigDecimal.valueOf(1.0));
         //WHEN
         ArrayList<Operation> allOperations = accountService.getOperationsByAccountId(idAccount).get();
         //THEN
         assertEquals(2, allOperations.size());
-        assertEquals(6.0, allOperations.get(0).getBalance());
-        assertEquals(5.0, allOperations.get(1).getBalance());
+        assertEquals(BigDecimal.valueOf(6.0), allOperations.get(0).getBalance());
+        assertEquals(BigDecimal.valueOf(5.0), allOperations.get(1).getBalance());
     }
-
 }

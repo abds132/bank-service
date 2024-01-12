@@ -1,5 +1,6 @@
 package fr.saddem.bank.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -17,12 +18,7 @@ import fr.saddem.bank.exceptions.NotEnoughBalanceException;
 
 @Service
 public class AccountServiceImpl implements AccountService{
-
-    /**
-     * Balance amount limit.
-     */
-    private static final double BALANCE_LIMIT = 0.0;
-
+    
     private AccountRepository accountRepository;
 
     public AccountServiceImpl(AccountRepository accountRepository) {
@@ -37,10 +33,10 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public void deposit(Long idAccount, Double amount) throws AccountNotFoundException {
+    public void deposit(Long idAccount, BigDecimal amount) throws AccountNotFoundException {
         final Account account = findAccountById(idAccount).get();
-        final Double currentBalance = account.getBalance();
-        final Double newBalance = currentBalance + amount;
+        final BigDecimal currentBalance = account.getBalance();
+        final BigDecimal newBalance = currentBalance.add(amount);
         DepositOperation depositOperation = new DepositOperation(UUID.randomUUID().toString(), LocalDateTime.now(), amount, newBalance, account);
         account.setBalance(newBalance);
         account.addAnOperation(depositOperation);
@@ -48,18 +44,18 @@ public class AccountServiceImpl implements AccountService{
 
 
     @Override
-    public void withdrawl(Long idAccount, Double amount) throws AccountNotFoundException, NotEnoughBalanceException {
+    public void withdrawl(Long idAccount, BigDecimal amount) throws AccountNotFoundException, NotEnoughBalanceException {
         Account account = findAccountById(idAccount).get();
-        checkBalanceOfTheAccount(account);
-        final Double currentBalance = account.getBalance();
-        final Double newBalance = currentBalance - amount;
+        checkBalanceOfTheAccount(account, amount);
+        final BigDecimal currentBalance = account.getBalance();
+        final BigDecimal newBalance = currentBalance.subtract(amount);
         WithdrawlOperation depositOperation = new WithdrawlOperation(UUID.randomUUID().toString(), LocalDateTime.now(), amount, newBalance, account);
         account.setBalance(newBalance);
         account.addAnOperation(depositOperation);
     }
 
-    private void checkBalanceOfTheAccount(final Account account) throws NotEnoughBalanceException {
-        if(account.getBalance() <= BALANCE_LIMIT) throw new NotEnoughBalanceException();
+    private void checkBalanceOfTheAccount(final Account account, final BigDecimal amount) throws NotEnoughBalanceException {
+        if(account.getBalance().compareTo(amount) <= 0) throw new NotEnoughBalanceException();
     }
 
     @Override

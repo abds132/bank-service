@@ -1,13 +1,15 @@
 package fr.saddem.bank.dto;
 
-public class WithdrawlRequest {
-    private Double amount;
+import java.math.BigDecimal;
 
-    public Double getAmount() {
+public class WithdrawlRequest {
+    private BigDecimal amount;
+
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }
